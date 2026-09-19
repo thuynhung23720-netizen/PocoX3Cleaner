@@ -3,10 +3,12 @@ name: Build Android APK with Buildozer
 on:
   push:
     branches: [ main ]
+  pull_request:
+    branches: [ main ]
 
 jobs:
   build:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
 
     steps:
     - name: Checkout code
@@ -35,23 +37,26 @@ jobs:
             libsdl2-image-dev \
             libsdl2-mixer-dev \
             libsdl2-ttf-dev \
-            libfontconfig1-dev \
-            libgles2-mesa-dev \
-            libgl1-mesa-dev \
+            libportmidi-dev \
+            libswscale-dev \
+            libavformat-dev \
+            libavcodec-dev \
             zlib1g-dev \
-            openjdk-17-jdk
+            libgstreamer1.0-dev \
+            gstreamer1.0-plugins-base \
+            gstreamer1.0-plugins-good \
+            libffi-dev \
+            libssl-dev
 
     - name: Install Buildozer and Cython
       run: |
         pip install --upgrade pip
-        pip install cython==0.29.36 buildozer
+        pip install --upgrade buildozer cython==0.29.36
+
+    - name: Clear old buildozer cache to prevent API mismatch
+      run: |
+        rm -rf .buildozer
 
     - name: Build with Buildozer
       run: |
         buildozer -v android debug
-
-    - name: Upload APK artifact
-      uses: actions/upload-artifact@v4
-      with:
-        name: package-apk
-        path: bin/*.apk
