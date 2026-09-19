@@ -57,6 +57,8 @@ jobs:
       run: |
         rm -rf .buildozer
 
-    - name: Build with Buildozer
+   - name: Build with Buildozer
+      env:
+        ANDROIDMINAPI: "31"
       run: |
-        yes | buildozer -v android debug
+        buildozer -v android debug
